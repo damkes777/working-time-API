@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $uuid
@@ -16,4 +17,9 @@ class Employee extends Model
         'name',
         'last_name',
     ];
+
+    public function workingTimes(): HasMany
+    {
+        return $this->hasMany(WorkingTime::class, 'employee_uuid', 'uuid');
+    }
 }
