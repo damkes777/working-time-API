@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TimeRegistrationRequest;
 use App\Models\WorkingTime;
 use App\Services\WorkingTimeService;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
 class WorkingTimesController
@@ -18,6 +17,20 @@ class WorkingTimesController
             $workingTimeService = new WorkingTimeService();
 
             $startDay = $workingTimeService->getStartDay($validated['work_start']);
+
+            if ($workingTimeService->workDayExist($validated['employee_uuid'], $startDay)) {
+
+                return response()->json([
+                    'message' => 'Time already registered for this day',
+                ], 400);
+            }
+
+            if ($workingTimeService->workedMoreThanLimit($validated['work_start'], $validated['work_end'])) {
+
+                return response()->json([
+                    'message' => 'You cannot work more than 12 hours',
+                ], 400);
+            }
 
             WorkingTime::query()
                        ->create([
