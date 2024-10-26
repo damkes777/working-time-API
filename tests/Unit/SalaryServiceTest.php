@@ -64,7 +64,9 @@ class SalaryServiceTest extends TestCase
         $hours              = 10;
         $overtime           = 2;
 
-        $salaryService->calculateSalary($hours, $rate, $overtime, $overtimeMultiplier, true);
+        $salary = $salaryService->calculateSalary($hours, $rate, $overtime, $overtimeMultiplier, true);
+
+        $this->assertEquals(240, $salary);
     }
 
     public function test_calculate_monthly_salary(): void
