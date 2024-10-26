@@ -17,4 +17,6 @@ Route::controller(WorkingTimesController::class)
      ->group(function () {
          Route::post('working-time/register', 'timeRegistration')
               ->name('working-time.register');
+         Route::get('working-time/summary', 'workingTimeSummary')
+              ->name('working-time.summary');
      });

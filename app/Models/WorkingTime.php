@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -20,8 +22,20 @@ class WorkingTime extends Model
         'work_day_start'
     ];
 
+    protected $appends = ['working_hours'];
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'employee_uuid', 'uuid');
+    }
+
+    public function workingHours(): Attribute
+    {
+        return new Attribute(get: function () {
+            $startTime = Carbon::parse($this->work_start);;
+            $endTime = Carbon::parse($this->work_end);
+
+            return $startTime->diffInHours($endTime);
+        });
     }
 }
