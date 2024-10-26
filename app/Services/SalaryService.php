@@ -7,22 +7,20 @@ use App\Interfaces\SalaryInterface;
 class SalaryService implements SalaryInterface
 {
     private float $normMonthly;
+    private float $rate;
+    private float $overtimeMultiplier;
+    private string $currency;
 
     public function __construct()
     {
-        $this->normMonthly = config('salary.normMonthly');
+        $this->normMonthly        = config('salary.normMonthly');
+        $this->rate               = config('salary.hourlyRate');
+        $this->overtimeMultiplier = config('salary.overtimeMultiplier');
+        $this->currency           = config('salary.currency');
     }
 
-    public function calculateOvertime(float $hours, bool $daily = false): float
+    public function calculateOvertime(float $hours): float
     {
-        if ($daily) {
-            if ($hours > 8) {
-                return $hours - 8;
-            }
-
-            return 0;
-        }
-
         if ($hours > $this->normMonthly) {
             return $hours - $this->normMonthly;
         }
@@ -32,24 +30,33 @@ class SalaryService implements SalaryInterface
 
     public function calculateSalary(
         float $hours,
-        float $rate,
-        float $overtime,
-        float $overtimeMultiplier,
+        float $overtime = 0,
         bool $daily = false
     ): float {
         if ($daily) {
-            if ($overtime > 0) {
-
-                return ($hours - $overtime) * $rate + $overtime * $rate * $overtimeMultiplier;
-            }
-
-            return $hours * $rate;
+            return $hours * $this->rate;
         }
 
         if ($hours > $this->normMonthly) {
-            return $this->normMonthly * $rate + ($hours - $this->normMonthly) * $rate * $overtimeMultiplier;
+            return $this->normMonthly * $this->rate +
+                   ($hours - $this->normMonthly) * $this->rate * $this->overtimeMultiplier;
         }
 
-        return $hours * $rate;
+        return $hours * $this->rate;
+    }
+
+    public function getRate(): float
+    {
+        return $this->rate;
+    }
+
+    public function getOvertimeMultiplier(): float
+    {
+        return $this->overtimeMultiplier;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
     }
 }

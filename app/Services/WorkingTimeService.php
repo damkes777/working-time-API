@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Interfaces\WorkingTimeInterface;
 use App\Models\WorkingTime;
 use Carbon\Carbon;
 
-class WorkingTimeService
+class WorkingTimeService implements WorkingTimeInterface
 {
     private const MAX_WORK_TIME = 12;
 
