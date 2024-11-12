@@ -3,56 +3,70 @@
 namespace Tests\Unit;
 
 use App\Services\SalaryService;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Tests\TestCase;
 
 class SalaryServiceTest extends TestCase
 {
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_calculate_overtime(): void
     {
-        $salaryService = new SalaryService();
+        $salaryService = $this->app->make(SalaryService::class);
         $hours         = 40;
         $overTime      = $salaryService->calculateOvertime($hours);
 
         $this->assertEquals(0, $overTime);
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_calculate_overtime_with_overtime(): void
     {
-        $salaryService = new SalaryService();
+        $salaryService = $this->app->make(SalaryService::class);
         $hours         = 50;
         $overTime      = $salaryService->calculateOvertime($hours);
 
         $this->assertEquals(10, $overTime);
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_calculate_daily_salary(): void
     {
-        $salaryService = new SalaryService();
+        $salaryService = $this->app->make(SalaryService::class);
         $hours         = 8;
 
-        $salary = $salaryService->calculateSalary(hours: $hours, daily: true);
+        $salary = $salaryService->calculateDailySalary(hours: $hours);
 
         $this->assertEquals(160, $salary);
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_calculate_monthly_salary(): void
     {
-        $salaryService = new SalaryService();
+        $salaryService = $this->app->make(SalaryService::class);
         $hours         = 40;
-        $overtime      = 0;
 
-        $salary = $salaryService->calculateSalary($hours, $overtime);
+        $salary = $salaryService->calculateMonthlySalary($hours);
 
         $this->assertEquals(800, $salary);
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_calculate_monthly_salary_with_overtime(): void
     {
-        $salaryService = new SalaryService();
+        $salaryService = $this->app->make(SalaryService::class);
         $hours         = 50;
-        $overtime      = 10;
 
-        $salary = $salaryService->calculateSalary($hours, $overtime);
+        $salary = $salaryService->calculateMonthlySalary($hours);
 
         $this->assertEquals(1200, $salary);
     }
