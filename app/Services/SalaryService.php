@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Interfaces\SalaryInterface;
+use App\Interfaces\SalaryServiceInterface;
 
-class SalaryService implements SalaryInterface
+class SalaryService implements SalaryServiceInterface
 {
     private float $normMonthly;
     private float $rate;
@@ -28,20 +28,18 @@ class SalaryService implements SalaryInterface
         return 0;
     }
 
-    public function calculateSalary(
-        float $hours,
-        float $overtime = 0,
-        bool $daily = false
-    ): float {
-        if ($daily) {
-            return $hours * $this->rate;
-        }
-
+    public function calculateMonthlySalary(float $hours): float
+    {
         if ($hours > $this->normMonthly) {
             return $this->normMonthly * $this->rate +
                    ($hours - $this->normMonthly) * $this->rate * $this->overtimeMultiplier;
         }
 
+        return $hours * $this->rate;
+    }
+
+    public function calculateDailySalary(float $hours): float
+    {
         return $hours * $this->rate;
     }
 

@@ -2,15 +2,13 @@
 
 namespace App\Interfaces;
 
-interface SalaryInterface
+interface SalaryServiceInterface
 {
     public function calculateOvertime(float $hours): float;
 
-    public function calculateSalary(
-        float $hours,
-        float $overtime = 0,
-        bool $daily = false
-    ): float;
+    public function calculateMonthlySalary(float $hours): float;
+
+    public function calculateDailySalary(float $hours): float;
 
     public function getRate(): float;
 
